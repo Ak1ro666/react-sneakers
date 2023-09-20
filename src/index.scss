@@ -4,11 +4,15 @@
    margin: 0;
    padding: 0;
    box-sizing: border-box;
+   font-family: 'Inter';
+}
+body {
+   border-radius: 18px;
+   background-color: #e7f6ff;
 }
 
-body {
-   font-family: 'Inter', system-ui, -apple-system;
-   background-color: #e7e6ff;
+body.overlay-open {
+   overflow: hidden;
 }
 
 /* Разметка стилей сайта */
@@ -47,6 +51,17 @@ header {
       border-radius: 40px;
       padding: 20px;
       max-width: 210px;
+      transition: box-shadow 0.25s ease-in-out, transform 0.25s ease-in-out;
+
+      &:hover {
+         box-shadow: 0px 20px 35px 0px rgba(0, 0, 0, 0.06);
+         transform: translateY(-5px);
+      }
+
+      .favorite {
+         position: absolute;
+         cursor: pointer;
+      }
 
       h5 {
          font-size: 14px;
@@ -73,4 +88,145 @@ header {
    width: 32px;
    height: 32px;
    cursor: pointer;
+}
+
+.search-block {
+   border: 1px solid #f3f3f3;
+   border-radius: 10px;
+   padding: 0 15px;
+
+   input {
+      border: none;
+      display: inline-block;
+      padding: 13px;
+      color: #c4c4c4;
+      width: 200px;
+
+      &:focus {
+         color: #000000;
+      }
+   }
+}
+
+.overlay {
+   position: absolute;
+   top: 0;
+   left: 0;
+   height: 100vh;
+   width: 100%;
+   background: rgba(0, 0, 0, 0.5);
+   z-index: 1;
+}
+
+.drawer {
+   position: absolute;
+   width: 420px;
+   height: 100%;
+   right: 0;
+   background-color: #ffffff;
+   box-shadow: -10px 4px 24px rgba(0, 0, 0, 0.1);
+   padding: 30px;
+   display: flex;
+   flex-direction: column;
+}
+
+.cartItem {
+   border: 1px solid #f3f3f3;
+   border-radius: 20px;
+   overflow: hidden;
+   padding: 20px;
+
+   .cartItemImg {
+      width: 70px;
+      height: 70px;
+      background-size: contain;
+      background-position: 0 -3px;
+      background-repeat: no-repeat;
+      margin-right: 20px;
+   }
+
+   p {
+      font-size: 16px;
+   }
+
+   b {
+      font-size: 14px;
+   }
+}
+
+.removeBtn {
+   opacity: 0.5;
+   cursor: pointer;
+   transition: opacity 0.15s ease-in-out;
+
+   &:hover {
+      opacity: 1;
+   }
+}
+
+.items {
+   flex: 1 1 auto;
+   overflow: auto;
+   margin-bottom: 40px;
+}
+
+.cartTotalBlock {
+   ul {
+      li {
+         display: flex;
+         align-items: baseline;
+
+         &:not(:last-child) {
+            margin-bottom: 20px;
+         }
+
+         div {
+            flex: 1;
+            height: 1px;
+            border-bottom: 1px dashed #dfdfdf;
+            margin: 0 9px;
+         }
+      }
+   }
+
+   button {
+      width: 100%;
+      color: #fff;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 18px;
+      background: #9dd458;
+      border: none;
+      padding: 18px 0;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+
+      &:hover {
+         background: lighten(#9dd458, 5%);
+      }
+
+      &:active {
+         background: darken(#9dd458, 5%);
+      }
+
+      &::after {
+         content: '';
+         background: url('/img/arrowRight.svg');
+         background-size: cover;
+         background-position: center;
+         width: 14px;
+         height: 14px;
+         display: inline-block;
+         position: relative;
+         top: 2px;
+         left: 50px;
+         transition: 0.2s all ease-in-out;
+      }
+
+      &:hover::after {
+         left: 57px;
+      }
+   }
 }
