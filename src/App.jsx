@@ -1,6 +1,7 @@
-import Card from './components/Card/Card';
-import Overlay from './components/Overlay/Overlay';
-import Header from './components/Header/Header';
+import Card from './components/Card';
+import Overlay from './components/Overlay';
+import Header from './components/Header';
+import { sneakers } from './constant/sneakers';
 
 function App() {
    return (
@@ -17,7 +18,15 @@ function App() {
                   </div>
                </div>
                <div className="sneakers d-flex flex-wrap">
-                  <Card />
+                  {sneakers.map((item, index) => (
+                     <Card
+                        key={index}
+                        title={item.title}
+                        price={item.price}
+                        imageUrl={item.imageUrl}
+                        onClickBtn={() => console.log(item)}
+                     />
+                  ))}
                </div>
             </div>
          </div>

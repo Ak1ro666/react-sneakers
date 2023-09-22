@@ -1,8 +1,10 @@
-export default function Header() {
+import styles from './Header.module.scss';
+
+function Header() {
    return (
       <>
-         <header className="d-flex justify-between align-center p-40">
-            <div className="headerLeft cu-p d-flex align-center">
+         <header className={styles.header}>
+            <div className={styles.headerLeft}>
                <img className="mr-15" width={40} height={40} src="/img/logo.png" alt="Logo" />
                <div>
                   <h3 className="text-uppercase">React Sneakers</h3>
@@ -25,3 +27,5 @@ export default function Header() {
       </>
    );
 }
+
+export default Header;
