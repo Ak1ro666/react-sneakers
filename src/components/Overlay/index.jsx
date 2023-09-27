@@ -1,63 +1,75 @@
 import styles from './Overlay.module.scss';
 
-function Overlay() {
+function Overlay({ closeCart, items = [], onRemove }) {
    return (
       <>
-         <div className={styles.overlay} style={{ display: 'none' }}>
+         <div className={styles.overlay}>
             <div className={styles.drawer}>
                <div className="d-flex justify-between align-center mb-30">
                   <h2>Корзина</h2>
-                  <img className="removeBtn" src="/img/btn-remove.svg" alt="Remove" />
+                  <img
+                     onClick={closeCart}
+                     className="removeBtn"
+                     src="/img/btn-remove.svg"
+                     alt="Remove"
+                  />
                </div>
 
-               <div className={styles.items}>
-                  <div className={styles.cartItem}>
-                     <div
-                        style={{ backgroundImage: 'url(/img/sneakers/1.jpg)' }}
-                        className={styles.cartItemImg}></div>
-                     <div className="mr-20 flex">
-                        <p className="mb-5">Мужские Кроссовки Nike Air Max 270</p>
-                        <b>12 999 руб.</b>
+               {items.length > 0 ? (
+                  <div>
+                     <div className={styles.items}>
+                        {items.map((item, index) => (
+                           <div key={index} className={styles.cartItem}>
+                              <div
+                                 style={{ backgroundImage: `url(${item.imageUrl})` }}
+                                 className={styles.cartItemImg}></div>
+                              <div className="mr-20 flex">
+                                 <p className="mb-5">{item.title}</p>
+                                 <b>{item.price.toLocaleString()} руб.</b>
+                              </div>
+                              <img
+                                 onClick={() => onRemove(item.id)}
+                                 className="removeBtn"
+                                 src="/img/btn-remove.svg"
+                                 alt="Remove"
+                              />
+                           </div>
+                        ))}
                      </div>
-                     <img className="removeBtn" src="/img/btn-remove.svg" alt="Remove" />
-                  </div>
-                  <div className={styles.cartItem}>
-                     <div
-                        style={{ backgroundImage: 'url(/img/sneakers/1.jpg)' }}
-                        className={styles.cartItemImg}></div>
-                     <div className="mr-20 flex">
-                        <p className="mb-5">Мужские Кроссовки Nike Air Max 270</p>
-                        <b>12 999 руб.</b>
+                     <div className={styles.cartTotalBlock}>
+                        <ul className="mb-40">
+                           <li>
+                              <span>Итого:</span>
+                              <div></div>
+                              <b>21 498 руб.</b>
+                           </li>
+                           <li>
+                              <span>Налог 5%: </span>
+                              <div></div>
+                              <b>1074 руб. </b>
+                           </li>
+                        </ul>
+                        <button>Оформить заказ</button>
                      </div>
-                     <img className="removeBtn" src="/img/btn-remove.svg" alt="Remove" />
                   </div>
-                  <div className={styles.cartItem}>
-                     <div
-                        style={{ backgroundImage: 'url(/img/sneakers/1.jpg)' }}
-                        className={styles.cartItemImg}></div>
-                     <div className="mr-20 flex">
-                        <p className="mb-5">Мужские Кроссовки Nike Air Max 270</p>
-                        <b>12 999 руб.</b>
-                     </div>
-                     <img className="removeBtn" src="/img/btn-remove.svg" alt="Remove" />
+               ) : (
+                  <div className="cartEmpty d-flex align-center justify-center flex-column flex">
+                     <img
+                        className="mb-20"
+                        width={120}
+                        height={120}
+                        src="/img/empty-cart.jpg"
+                        alt="cart empty"
+                     />
+                     <p className="opacity-6">
+                        Добавьте хотябы одну пару кроссовок, чтобы сделать заказ.
+                     </p>
+                     <button onClick={closeCart} className="greenButton">
+                        <img src="/img/arrowRight.svg" alt="Arrow" />
+                        Вернуться назад
+                     </button>
                   </div>
-               </div>
-
-               <div className={styles.cartTotalBlock}>
-                  <ul className="mb-40">
-                     <li>
-                        <span>Итого:</span>
-                        <div></div>
-                        <b>21 498 руб.</b>
-                     </li>
-                     <li>
-                        <span>Налог 5%: </span>
-                        <div></div>
-                        <b>1074 руб. </b>
-                     </li>
-                  </ul>
-                  <button>Оформить заказ</button>
-               </div>
+               )}
             </div>
          </div>
       </>
