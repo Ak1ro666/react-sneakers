@@ -8,9 +8,26 @@ const Home = ({
    onAddToCart,
    onAddToFavorite,
    changeInputValue,
+   isLoading,
 }) => {
    const clearInputValue = () => {
       setSearchValue('');
+   };
+
+   const renderItems = () => {
+      const filteredItems = items.filter((item) =>
+         item.title.toLowerCase().includes(searchValue.toLowerCase()),
+      );
+
+      return (isLoading ? [...Array(10)] : filteredItems).map((item, index) => (
+         <Card
+            key={index}
+            onPlus={(obj) => onAddToCart(obj)}
+            onFavorite={(obj) => onAddToFavorite(obj)}
+            loading={isLoading}
+            {...item}
+         />
+      ));
    };
    return (
       <div className="p-40">
@@ -35,18 +52,7 @@ const Home = ({
                )}
             </div>
          </div>
-         <div className="sneakers d-flex flex-wrap">
-            {items
-               .filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase()))
-               .map((item, index) => (
-                  <Card
-                     key={index}
-                     onPlus={(obj) => onAddToCart(obj)}
-                     onFavorite={(obj) => onAddToFavorite(obj)}
-                     {...item}
-                  />
-               ))}
-         </div>
+         <div className="sneakers d-flex flex-wrap">{renderItems()}</div>
       </div>
    );
 };

@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
+import ContentLoader from 'react-content-loader';
 import styles from './Card.module.scss';
 
-function Card({ id, title, price, imageUrl, onPlus, onFavorite, favorited = false }) {
-   const [isAdded, setIsAdded] = useState(false);
+import AppContext from '../../context';
+
+function Card({
+   id,
+   title,
+   price,
+   imageUrl,
+   onPlus,
+   onFavorite,
+   favorited = false,
+   loading = false,
+}) {
+   const { isItemAdded } = React.useContext(AppContext);
    const [isLiked, setIsLiked] = useState(favorited);
 
    const onClickPlus = () => {
-      onPlus({ title, price, imageUrl });
-      setIsAdded(!isAdded);
+      onPlus({ id, title, price, imageUrl });
    };
 
    const onAddLiked = () => {
@@ -18,28 +29,46 @@ function Card({ id, title, price, imageUrl, onPlus, onFavorite, favorited = fals
    return (
       <>
          <div className={styles.card}>
-            <div className={styles.favorite} onClick={onAddLiked}>
-               <img
-                  width={32}
-                  height={32}
-                  src={isLiked ? '/img/heart-liked.png' : '/img/heart-unliked.png'}
-                  alt="like"
-               />
-            </div>
-            <img className="mb-15" width={133} height={112} src={imageUrl} alt="Sneakers" />
-            <h5 className="card-text">{title}</h5>
-            <div className="d-flex justify-between align-center">
-               <div className="d-flex flex-column">
-                  <span>Цена:</span>
-                  <b>{price.toLocaleString()} руб</b>
-               </div>
-               <img
-                  className={styles.plus}
-                  onClick={onClickPlus}
-                  src={isAdded ? '/img/btn-cheked.svg' : '/img/btn-plus.svg'}
-                  alt="Plus"
-               />
-            </div>
+            {loading ? (
+               <ContentLoader
+                  speed={2}
+                  width={170}
+                  height={250}
+                  viewBox="0 0 170 265"
+                  backgroundColor="#f3f3f3"
+                  foregroundColor="#ecebeb">
+                  <rect x="0" y="0" rx="10" ry="10" width="170" height="155" />
+                  <rect x="0" y="169" rx="8" ry="8" width="170" height="15" />
+                  <rect x="0" y="191" rx="8" ry="8" width="100" height="15" />
+                  <rect x="0" y="237" rx="8" ry="8" width="80" height="25" />
+                  <rect x="135" y="231" rx="8" ry="8" width="35" height="35" />
+               </ContentLoader>
+            ) : (
+               <>
+                  <div className={styles.favorite} onClick={onAddLiked}>
+                     <img
+                        width={32}
+                        height={32}
+                        src={isLiked ? '/img/heart-liked.png' : '/img/heart-unliked.png'}
+                        alt="like"
+                     />
+                  </div>
+                  <img className="mb-15" width="100%" height={135} src={imageUrl} alt="Sneakers" />
+                  <h5 className="card-text">{title}</h5>
+                  <div className="d-flex justify-between align-center">
+                     <div className="d-flex flex-column">
+                        <span>Цена:</span>
+                        <b>{price.toLocaleString()} руб</b>
+                     </div>
+                     <img
+                        className={styles.plus}
+                        onClick={onClickPlus}
+                        src={isItemAdded(id) ? '/img/btn-cheked.svg' : '/img/btn-plus.svg'}
+                        alt="Plus"
+                     />
+                  </div>
+               </>
+            )}
          </div>
       </>
    );

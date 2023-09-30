@@ -17,12 +17,11 @@
       padding: 30px;
       display: flex;
       flex-direction: column;
+      overflow: auto;
    }
 
    .items {
-      height: 600px;
       flex: 1 1 auto;
-      overflow: auto;
       margin-bottom: 40px;
 
       .cartItem {
@@ -52,6 +51,7 @@
          }
       }
    }
+
    .cartTotalBlock {
       ul {
          li {
@@ -68,47 +68,6 @@
                border-bottom: 1px dashed #dfdfdf;
                margin: 0 9px;
             }
-         }
-      }
-
-      button {
-         width: 100%;
-         color: #fff;
-         text-align: center;
-         font-size: 16px;
-         font-weight: 500;
-         border-radius: 18px;
-         background: #9dd458;
-         border: none;
-         padding: 18px 0;
-         position: relative;
-         cursor: pointer;
-         transition: background 0.2s ease-in-out;
-
-         &:hover {
-            background: lighten(#9dd458, 5%);
-         }
-
-         &:active {
-            background: darken(#9dd458, 5%);
-         }
-
-         &::after {
-            content: '';
-            background: url('/img/arrowRight.svg');
-            background-size: cover;
-            background-position: center;
-            width: 14px;
-            height: 14px;
-            display: inline-block;
-            position: relative;
-            top: 2px;
-            left: 50px;
-            transition: 0.2s all ease-in-out;
-         }
-
-         &:hover::after {
-            left: 57px;
          }
       }
    }

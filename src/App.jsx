@@ -6,45 +6,37 @@ import Header from './components/Header';
 import axios from 'axios';
 import Favorites from './Pages/Favorites';
 
-function App() {
+import AppContext from './context';
+
+const App = () => {
    const [items, setItems] = React.useState([]);
    const [cartItems, setCartItems] = useState([]);
    const [favorites, setFavorites] = useState([]);
    const [searchValue, setSearchValue] = useState('');
    const [cartOpened, setCartOpened] = useState(false);
+   const [isLoading, setIsLoading] = useState(false);
 
    React.useEffect(() => {
-      axios
-         .get('https://650f5b2754d18aabfe9a09ba.mockapi.io/items')
-         .then((res) => {
-            setItems(res.data);
-         })
-         .catch((error) => {
-            console.log('Error>>>', error);
-         });
+      async function fetchData() {
+         setIsLoading(true);
+         const responseCart = await axios.get('https://650f5b2754d18aabfe9a09ba.mockapi.io/Cart');
+         const favoritesCart = await axios.get(
+            'https://6512b5bfb8c6ce52b3960d63.mockapi.io/favorites',
+         );
+         const responseItems = await axios.get('https://650f5b2754d18aabfe9a09ba.mockapi.io/items');
 
-      axios
-         .get('https://650f5b2754d18aabfe9a09ba.mockapi.io/Cart')
-         .then((res) => {
-            setCartItems(res.data);
-         })
-         .catch((error) => {
-            console.log('Error>>>', error);
-         });
+         setIsLoading(false);
 
-      axios
-         .get('https://6512b5bfb8c6ce52b3960d63.mockapi.io/favorites')
-         .then((res) => {
-            setFavorites(res.data);
-         })
-         .catch((error) => {
-            console.log('Error>>>', error);
-         });
+         setFavorites(favoritesCart.data);
+         setCartItems(responseCart.data);
+         setItems(responseItems.data);
+      }
+      fetchData();
    }, []);
 
    const onAddToCart = async (obj) => {
-      if (cartItems.find((item) => item.id === obj.id)) {
-         setCartItems.filter((item) => item.id !== obj.id);
+      if (cartItems.find((item) => Number(item.id) === Number(obj.id))) {
+         cartItems.filter((item) => Number(item.id) !== Number(obj.id));
       } else {
          try {
             axios.post('https://650f5b2754d18aabfe9a09ba.mockapi.io/Cart', obj);
@@ -56,7 +48,7 @@ function App() {
    };
 
    const onRemove = (id) => {
-      setCartItems((prev) => prev.filter((item) => item.id !== id));
+      setCartItems((prev) => prev.filter((item) => Number(item.id) !== Number(id)));
 
       axios
          .delete(`https://650f5b2754d18aabfe9a09ba.mockapi.io/Cart/${id}`)
@@ -72,6 +64,7 @@ function App() {
       try {
          if (favorites.find((favObj) => favObj.id === obj.id)) {
             axios.delete(`https://6512b5bfb8c6ce52b3960d63.mockapi.io/favorites/${obj.id}`);
+            setFavorites((prev) => prev.filter((item) => Number(item.id) !== Number(obj.id)));
          } else {
             const { data } = await axios.post(
                'https://6512b5bfb8c6ce52b3960d63.mockapi.io/favorites',
@@ -89,50 +82,56 @@ function App() {
    };
 
    const body = document.querySelector('body');
-   cartOpened
-      ? body.classList.add('overlay-open')
-      : (body.classList.remove('overlay-open'), body.classList.add('overlay-close'));
+   cartOpened ? (body.style.overflow = 'hidden') : (body.style.overflow = 'auto');
+
+   const isItemAdded = (id) => {
+      return cartItems.some((obj) => Number(obj.id) === Number(id));
+   };
 
    return (
-      <Router>
-         <div className="wrapper clear">
-            {cartOpened && (
-               <Overlay
-                  items={cartItems}
-                  closeCart={() => setCartOpened(false)}
-                  onRemove={onRemove}
-               />
-            )}
+      <AppContext.Provider
+         value={{
+            items,
+            cartItems,
+            favorites,
+            isItemAdded,
+            onAddToFavorite,
+            setCartOpened,
+            setCartItems,
+         }}>
+         <Router>
+            <div className="wrapper clear">
+               {cartOpened && <Overlay items={cartItems} onRemove={onRemove} />}
 
-            <Header
-               cartOpen={() => {
-                  setCartOpened(true);
-                  window.scrollTo(0, 0);
-               }}
-            />
+               <Header
+                  cartOpen={() => {
+                     setCartOpened(true);
+                     window.scrollTo(0, 0);
+                  }}
+               />
 
-            <Routes>
-               <Route
-                  path="/"
-                  element={
-                     <Home
-                        items={items}
-                        searchValue={searchValue}
-                        setSearchValue={setSearchValue}
-                        onAddToCart={onAddToCart}
-                        changeInputValue={changeInputValue}
-                        onAddToFavorite={onAddToFavorite}
-                     />
-                  }
-               />
-               <Route
-                  path="/favorites"
-                  element={<Favorites items={favorites} onAddToFavorite={onAddToFavorite} />}
-               />
-            </Routes>
-         </div>
-      </Router>
+               <Routes>
+                  <Route
+                     path="/"
+                     element={
+                        <Home
+                           cartItems={cartItems}
+                           items={items}
+                           searchValue={searchValue}
+                           setSearchValue={setSearchValue}
+                           onAddToCart={onAddToCart}
+                           changeInputValue={changeInputValue}
+                           onAddToFavorite={onAddToFavorite}
+                           isLoading={isLoading}
+                        />
+                     }
+                  />
+                  <Route path="/favorites" element={<Favorites />} />
+               </Routes>
+            </div>
+         </Router>
+      </AppContext.Provider>
    );
-}
+};
 
 export default App;
