@@ -1,13 +1,16 @@
 import React from 'react';
-import styles from './Overlay.module.scss';
-import Info from '../Info';
 import axios from 'axios';
 
+import styles from './Overlay.module.scss';
+
+import Info from '../Info';
+
 import AppContext from '../../context';
+import { useCart } from '../../hooks/useCart';
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const Overlay = ({ items = [], onRemove }) => {
+const Overlay = ({ items = [], onRemove, opened }) => {
    const { cartItems, setCartOpened, setCartItems } = React.useContext(AppContext);
 
    const [orderId, setOrderId] = React.useState(null);
@@ -35,6 +38,8 @@ const Overlay = ({ items = [], onRemove }) => {
       }
       setIsLoading(false);
    };
+
+   const { totalPrice } = useCart();
 
    return (
       <>
@@ -76,12 +81,12 @@ const Overlay = ({ items = [], onRemove }) => {
                            <li>
                               <span>Итого:</span>
                               <div></div>
-                              <b>21 498 руб.</b>
+                              <b>{totalPrice.toLocaleString()} руб.</b>
                            </li>
                            <li>
                               <span>Налог 5%: </span>
                               <div></div>
-                              <b>1074 руб. </b>
+                              <b>{Math.round(totalPrice * 0.05).toLocaleString()} руб. </b>
                            </li>
                         </ul>
                         <button
